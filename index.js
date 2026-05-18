@@ -2,12 +2,16 @@ const express = require('express');
 const cors = require('cors');
 const sequelize = require('./config/database');
 
+const verifyToken = require('./middleware/authMiddleware');
+
 // Import model agar relasi tereksekusi oleh Sequelize
 const User = require('./models/User');
 const Dokter = require('./models/Dokter');
 const Pasien = require('./models/Pasien');
 const RekamMedis = require('./models/RekamMedis');
 
+//routes
+const authRoutes = require('./routes/authRoutes');
 const pasienRoutes = require('./routes/pasienRoutes');
 const rekamMedisRoutes = require('./routes/rekamMedisRoutes');
 
@@ -17,6 +21,10 @@ app.use(express.json());
 
 app.use('/api/pasien', pasienRoutes);
 app.use('/api/rekam-medis', rekamMedisRoutes);
+app.use('/api/auth', authRoutes);
+
+app.use('/api/pasien', verifyToken, pasienRoutes);
+app.use('/api/rekam-medis', verifyToken, rekamMedisRoutes);
 
 const PORT = process.env.PORT || 3000;
 
