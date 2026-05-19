@@ -49,18 +49,18 @@ router.post('/register', async (req, res) => {
 // 2. LOGIN USER
 router.post('/login', async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { username, password } = req.body;
 
-        // Cari user berdasarkan email
-        const user = await User.findOne({ where: { email } });
+        // Cari user berdasarkan username
+        const user = await User.findOne({ where: {username} });
         if (!user) {
-            return res.status(401).json({ message: 'Email atau password salah!' });
+            return res.status(401).json({ message: 'Username atau password salah!' });
         }
 
         // Bandingkan password inputan dengan password hash di database
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: 'Email atau password salah!' });
+            return res.status(401).json({ message: 'Username atau password salah!' });
         }
 
         // Ambil data ID dokter jika user tersebut adalah dokter (untuk keperluan RBAC nanti)

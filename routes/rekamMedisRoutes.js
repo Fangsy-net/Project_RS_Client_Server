@@ -3,9 +3,10 @@ const router = express.Router();
 const RekamMedis = require('../models/RekamMedis');
 const Pasien = require('../models/Pasien');
 const Dokter = require('../models/Dokter');
+const grantAccess = require('../middleware/roleMiddleware');
 
 // 1. CREATE: Menambah Catatan Rekam Medis Baru
-router.post('/', async (req, res) => {
+router.post('/', grantAccess('resepsionis'), async (req, res) => {
     try {
         // Pastikan pasien_id dan dokter_id yang dimasukkan memang ada di database
         const pasienExist = await Pasien.findByPk(req.body.pasienId);
@@ -23,7 +24,7 @@ router.post('/', async (req, res) => {
 });
 
 // 2. READ ALL: Mengambil Semua Rekam Medis Beserta Info Pasien & Dokter (Eager Loading)
-router.get('/', async (req, res) => {
+router.get('/', grantAccess('resepsionis'), async (req, res) => {
     try {
         const semuaRM = await RekamMedis.findAll({
             include: [

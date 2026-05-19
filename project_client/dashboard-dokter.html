@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Kasir UMKM - Dokter</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex">
+
+    <aside class="w-64 bg-slate-900 text-slate-400 flex flex-col justify-between p-4 shrink-0 shadow-xl">
+        <div>
+            <div class="flex items-center gap-3 px-2 py-4 border-b border-slate-800 mb-6">
+                <div class="bg-blue-600 text-white p-2 rounded-lg text-lg flex items-center justify-center shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-hospital-user"></i>
+                </div>
+                <div>
+                    <h2 class="text-white font-bold text-base tracking-wide leading-tight">Kasir UMKM</h2>
+                    <span class="text-xs text-slate-500">Klinik Management</span>
+                </div>
+            </div>
+
+            <nav class="space-y-1">
+                <a href="./dashboard-pasien.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-slate-200 font-medium transition group">
+                    <i class="fa-solid fa-users w-5 text-center text-slate-500 group-hover:text-blue-500 transition"></i>
+                    <span>Data Pasien</span>
+                </a>
+                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-600 text-white font-medium transition shadow-md shadow-blue-600/10">
+                    <i class="fa-solid fa-user-doctor w-5 text-center"></i>
+                    <span>Data Dokter</span>
+                </a>
+                <a href="#" onclick="alert('Modul Transaksi Segera Datang!')" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-slate-200 font-medium transition group">
+                    <i class="fa-solid fa-cash-register w-5 text-center text-slate-500 group-hover:text-blue-500 transition"></i>
+                    <span>Transaksi Kasir</span>
+                </a>
+            </nav>
+        </div>
+
+        <div class="border-t border-slate-800 pt-4 flex flex-col gap-3">
+            <div class="flex items-center gap-3 px-2">
+                <div class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-sm text-blue-400">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <p class="text-sm font-semibold text-slate-200 truncate" id="user-info">Loading...</p>
+                </div>
+            </div>
+            <button onclick="logout()" class="w-full bg-slate-800/50 hover:bg-red-950/40 hover:text-red-400 text-slate-400 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 border border-slate-800 hover:border-red-900/50">
+                <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                <span>Keluar Sistem</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0">
+        <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center shrink-0 shadow-xs">
+            <div>
+                <h1 class="text-xl font-bold text-slate-900">Database Dokter</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Kelola informasi data staf dokter dan spesialisasi klinik</p>
+            </div>
+            
+            <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition flex items-center gap-2 shadow-lg shadow-blue-600/10 active:scale-98">
+                <i class="fa-solid fa-plus text-xs"></i>
+                <span>Tambah Dokter Baru</span>
+            </button>
+        </header>
+
+        <div class="p-8 flex-1 overflow-y-auto">
+            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 font-semibold text-xs tracking-wider border-b border-slate-200">
+                                <th class="p-4 w-16 text-center">ID</th>
+                                <th class="p-4">Nama Lengkap Dokter</th>
+                                <th class="p-4">Spesialisasi</th>
+                                <th class="p-4">No. Telephone / WA</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-dokter" class="text-slate-600 text-sm divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="4" class="p-8 text-center text-slate-400">
+                                    <i class="fa-solid fa-circle-notch animate-spin text-blue-500 text-xl mb-2 block"></i>
+                                    Menghubungkan ke database server...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="dokter-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50">
+        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden border border-slate-100">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-user-md text-blue-600 text-sm"></i>
+                    <span>Registrasi Dokter Baru</span>
+                </h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-200/50">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <form id="dokter-form" class="p-6 space-y-4">
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Nama Lengkap Dokter</label>
+                    <input type="text" id="dokter-nama" required class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition" placeholder="Contoh: dr. Ahmad Subarjo, Sp.A">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Spesialisasi</label>
+                    <input type="text" id="dokter-spesialisasi" required class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition" placeholder="Contoh: Umum, Anak, Kandungan, Dalam">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">No. Telp / Handphone</label>
+                    <input type="text" id="dokter-telp" class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition" placeholder="08xxxxxxxxxx">
+                </div>
+                
+                <div class="flex justify-end gap-2 pt-4 border-t border-slate-100 mt-6">
+                    <button type="button" onclick="closeModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-lg text-sm font-semibold transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition shadow-lg shadow-blue-600/10">
+                        Simpan ke Database
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('userRole');
+        const username = localStorage.getItem('username');
+
+        if (!token) {
+            alert('Akses ditolak! Silahkan login terlebih dahulu.');
+            window.location.href = './login.html';
+        } else {
+            document.getElementById('user-info').innerText = `${username} (${role})`;
+        }
+
+        function openModal() { document.getElementById('dokter-modal').classList.remove('hidden'); }
+        function closeModal() {
+            document.getElementById('dokter-modal').classList.add('hidden');
+            document.getElementById('dokter-form').reset();
+        }
+
+        // FETCH DATA DOKTER
+        async function fetchDokter() {
+            try {
+                const response = await fetch('http://localhost:3000/api/dokter', { // Sesuaikan endpoint backend lu, Tot
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) throw new Error('Gagal mengambil data dokter!');
+
+                const dataDokter = await response.json();
+                const tbody = document.getElementById('tabel-dokter');
+                tbody.innerHTML = '';
+
+                if (dataDokter.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="4" class="p-8 text-center text-slate-400"><i class="fa-solid fa-folder-open mb-2 block text-xl text-slate-300"></i>Belum ada data dokter terdaftar.</td></tr>`;
+                    return;
+                }
+
+                dataDokter.forEach(dokter => {
+                    const nama = dokter.namaDokter || dokter.nama_dokter || '-';
+                    const spesialisasi = dokter.spesialisasi || '-';
+                    const telp = dokter.noTelp || dokter.no_telp || '-';
+
+                    const row = `
+                        <tr class="hover:bg-slate-50/80 transition duration-150">
+                            <td class="p-4 text-center font-bold text-slate-400 bg-slate-50/30">${dokter.id}</td>
+                            <td class="p-4 font-semibold text-slate-900">${nama}</td>
+                            <td class="p-4">
+                                <span class="bg-emerald-50 text-emerald-600 px-2.5 py-1 rounded-full text-xs font-semibold border border-emerald-100">${spesialisasi}</span>
+                            </td>
+                            <td class="p-4 text-slate-600 font-medium"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1.5 text-base align-middle"></i>${telp}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                document.getElementById('tabel-dokter').innerHTML = `
+                    <tr><td colspan="4" class="p-8 text-center text-red-500 font-bold"><i class="fa-solid fa-triangle-exclamation mr-2"></i>${error.message}</td></tr>
+                `;
+            }
+        }
+
+        // POST DATA DOKTER BARU
+        document.getElementById('dokter-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const namaDokter = document.getElementById('dokter-nama').value;
+            const spesialisasi = document.getElementById('dokter-spesialisasi').value;
+            const noTelp = document.getElementById('dokter-telp').value;
+
+            try {
+                const response = await fetch('http://localhost:3000/api/dokter', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    // Mengirimkan objek camelCase sesuai kesepakatan Sequelize model lu
+                    body: JSON.stringify({ namaDokter, spesialisasi, noTelp })
+                });
+
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.message || 'Gagal menyimpan data dokter.');
+
+                closeModal();
+                fetchDokter(); 
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = './login.html';
+        }
+
+        fetchDokter();
+    </script>
+</body>
+</html>

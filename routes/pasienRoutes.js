@@ -1,60 +1,83 @@
 const express = require('express');
 const router = express.Router();
-const Pasien = require('../models/Pasien');
-const { Op } = require('sequelize');
+const Pasien = require('../models/Pasien'); 
+const grantAccess = require('../middleware/roleMiddleware'); // Pastikan path ini benar
 
-// 1. CREATE: Menambah Pasien Baru
-router.post('/', async (req, res) => {
-    try {
-        const pasien_baru = await Pasien.create(req.body);
-        res.status(201).json({ message: 'Data pasien berhasil disimpan!', data: pasien_baru });
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-});
-
-// 2. READ ALL + SEARCH: Mengambil Semua Pasien (Bisa difilter lewat query '?search=nama')
-router.get('/', async (req, res) => {
+// ==========================================
+// 1. GET ALL PASIEN (Bisa diakses Admin, Resepsionis, Dokter)
+// ==========================================
+router.get('/', grantAccess('resepsionis', 'dokter'), async (req, res) => {
     try {
         const { search } = req.query;
         let queryOptions = {};
 
+        // Fitur pencarian berdasarkan nama jika ada query ?search=...
         if (search) {
+            const { Op } = require('sequelize');
             queryOptions.where = {
                 namaPasien: { [Op.like]: `%${search}%` }
             };
         }
 
         const dataPasien = await Pasien.findAll(queryOptions);
-        res.status(200).json(dataPasien);
+        return res.status(200).json(dataPasien);
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 });
 
-// 3. UPDATE: Mengubah Data Pasien berdasarkan ID
-router.put('/:id', async (req, res) => {
+// ==========================================
+// 2. POST / CREATE PASIEN (Hanya Admin & Resepsionis)
+// ==========================================
+router.post('/', grantAccess('resepsionis'), async (req, res) => {
     try {
-        const pasien_baru = await Pasien.findByPk(req.params.id);
-        if (!pasien_baru) return res.status(404).json({ message: 'Pasien tidak ditemukan' });
-
-        await pasien_baru.update(req.body);
-        res.status(200).json({ message: 'Data pasien berhasil diperbarui', data: pasien_baru });
+        const pasienBaru = await Pasien.create(req.body);
+        return res.status(201).json({ 
+            message: 'Data pasien berhasil disimpan!', 
+            data: pasienBaru 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
     }
 });
 
-// 4. DELETE: Menghapus Pasien
-router.delete('/:id', async (req, res) => {
+// ==========================================
+// 3. PUT / UPDATE PASIEN (Hanya Admin & Resepsionis)
+// ==========================================
+router.put('/:id', grantAccess('resepsionis'), async (req, res) => {
     try {
-        const pasien_baru = await Pasien.findByPk(req.params.id);
-        if (!pasien_baru) return res.status(404).json({ message: 'Pasien tidak ditemukan' });
+        const { id } = req.params;
+        const [updatedRows] = await Pasien.update(req.body, { where: { id } });
 
-        await pasien_baru.destroy();
-        res.status(200).json({ message: 'Data pasien berhasil dihapus dari sistem' });
+        if (updatedRows === 0) {
+            return res.status(404).json({ message: 'Data pasien tidak ditemukan atau tidak ada perubahan!' });
+        }
+
+        const dataTerupdate = await Pasien.findByPk(id);
+        return res.status(200).json({ 
+            message: 'Data pasien berhasil diperbarui!', 
+            data: dataTerupdate 
+        });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+// ==========================================
+// 4. DELETE PASIEN (Hanya Admin & Resepsionis)
+// ==========================================
+router.delete('/:id', grantAccess('resepsionis'), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deleted = await Pasien.destroy({ where: { id } });
+
+        if (!deleted) {
+            return res.status(404).json({ message: 'Data pasien tidak ditemukan!' });
+        }
+
+        return res.status(200).json({ message: 'Data pasien berhasil dihapus dari sistem!' });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
     }
 });
 
