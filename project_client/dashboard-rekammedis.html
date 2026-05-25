@@ -196,9 +196,10 @@
                 result.forEach(rm => {
                     // Konversi format tanggal biar gak kepanjangan
                     const tglPembuatan = rm.createdAt ? new Date(rm.createdAt).toLocaleDateString('id-ID', {day: 'numeric', month: 'short'}) : '-';
-                    const namaPasien = rm.pasien ? rm.pasien.namaPasien : 'Pasien Kosong';
-                    const namaDokter = rm.dokter ? rm.dokter.namaDokter : 'Dokter Kosong';
+                    const namaPasien = rm.Pasien ? rm.Pasien.namaPasien : '-';
+                    const namaDokter = rm.Dokter ? rm.Dokter.namaDokter : '-';
                     const diagnosa = rm.diagnosa || rm.riwayatPenyakit || '-';
+                    const resepObat = rm.resepObat || rm.aturanDosis || '-';
 
                     const row = `
                         <tr class="hover:bg-slate-50/80 transition duration-150">
@@ -207,7 +208,7 @@
                             <td class="p-4 text-slate-700"><i class="fa-solid fa-user-doctor text-slate-400 mr-1.5 text-xs"></i>${namaDokter}</td>
                             <td class="p-4 text-slate-500 italic">"${rm.keluhan || '-'}"</td>
                             <td class="p-4 font-semibold text-red-600"><span class="bg-red-50 px-2 py-1 rounded-md border border-red-100 text-xs">${diagnosa}</span></td>
-                            <td class="p-4 font-mono text-xs text-slate-600 bg-blue-50/10 whitespace-pre-line">${rm.resepObat || '-'}</td>
+                            <td class="p-4 font-mono text-xs text-slate-600 bg-blue-50/10 whitespace-pre-line">${resepObat}</td>
                         </tr>
                     `;
                     tbody.innerHTML += row;
