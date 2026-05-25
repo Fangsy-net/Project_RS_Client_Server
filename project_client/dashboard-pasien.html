@@ -3,68 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Kasir UMKM - Pasien</title>
+    <title>Klinik Harapan Indah - Pasien</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
 </head>
-<body class="bg-slate-50 text-slate-800 min-h-screen flex">
+<body class="bg-slate-50 text-slate-800 h-screen w-screen flex overflow-hidden font-sans">
 
-    <aside class="w-64 bg-slate-900 text-white h-screen flex flex-col justify-between px-6 py-8">
+    <aside class="w-64 bg-slate-900 text-white h-full flex flex-col justify-between px-6 py-6 border-r border-slate-800 shrink-0">
         <div>
             <div class="flex items-center gap-3 px-2 py-4 border-b border-slate-800 mb-6">
-                <div class="bg-blue-600 text-white p-2 rounded-lg text-lg flex items-center justify-center shadow-md shadow-blue-500/20">
+                <div class="bg-blue-600 text-white p-2 rounded-xl text-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
                     <i class="fa-solid fa-hospital-user"></i>
                 </div>
                 <div>
                     <h2 class="text-white font-bold text-base tracking-wide leading-tight">Klinik Harapan Indah</h2>
+                    <span class="text-[10px] text-slate-400 block mt-0.5">Sistem Manajemen</span>
                 </div>
             </div>
-        </div>
 
-        <nav class="space-y-1">
-    <a href="dashboard-pasien.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl bg-blue-600 text-white font-semibold">
-        <i class="fa-solid fa-users"></i>
-        <span>Data Pasien</span>
-    </a>
-    
-    <a href="dashboard-jadwal.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
-        <i class="fa-solid fa-calendar-days"></i>
-        <span>Jadwal Dokter</span>
-    </a>
-</nav>
+            <nav class="space-y-1.5">
+                <a href="dashboard-pasien.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-600/10">
+                    <i class="fa-solid fa-users w-5 text-center"></i>
+                    <span>Data Pasien</span>
+                </a>
+                
+                <a href="dashboard-jadwal.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl text-slate-400 hover:bg-slate-800 hover:text-white transition group">
+                    <i class="fa-solid fa-calendar-days w-5 text-center group-hover:text-white"></i>
+                    <span>Jadwal Dokter</span>
+                </a>
+
+                <a href="dashboard-rekammedis.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl text-slate-400 hover:bg-slate-800 hover:text-white transition group">
+                    <i class="fa-solid fa-file-medical w-5 text-center group-hover:text-white"></i>
+                    <span>Riwayat Penyakit</span>
+                </a>
+            </nav>
+        </div>
 
         <div class="border-t border-slate-800 pt-4 flex flex-col gap-3">
             <div class="flex items-center gap-3 px-2">
-                <div class="w-9 h-9 rounded-full bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-sm text-blue-400">
+                <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-sm text-blue-400">
                     <i class="fa-solid fa-user-shield"></i>
                 </div>
                 <div class="overflow-hidden">
                     <p class="text-sm font-semibold text-slate-200 truncate" id="user-info">Loading...</p>
                 </div>
             </div>
-            <button onclick="logout()" class="w-full bg-slate-800/50 hover:bg-red-950/40 hover:text-red-400 text-slate-400 py-2.5 px-4 rounded-lg text-sm font-medium transition flex items-center justify-center gap-2 border border-slate-800 hover:border-red-900/50">
+            <button onclick="logout()" class="w-full bg-slate-800/50 hover:bg-red-950/40 hover:text-red-400 text-slate-400 py-2.5 px-4 rounded-xl text-sm font-medium transition flex items-center justify-center gap-2 border border-slate-800 hover:border-red-900/50 active:scale-[0.98]">
                 <i class="fa-solid fa-right-from-bracket text-xs"></i>
                 <span>Keluar Sistem</span>
             </button>
         </div>
     </aside>
 
-    <main class="flex-1 flex flex-col min-w-0">
-        <header class="bg-white border-b border-slate-200 px-8 py-4 flex justify-between items-center shrink-0 shadow-xs">
+    <main class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        <header class="bg-white border-b border-slate-200 px-8 py-5 flex justify-between items-center shrink-0 shadow-xs">
             <div>
                 <h1 class="text-xl font-bold text-slate-900">Database Pasien</h1>
                 <p class="text-xs text-slate-500 mt-0.5">Kelola informasi data rekam medis pasien terdaftar</p>
             </div>
             
-            <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition flex items-center gap-2 shadow-lg shadow-blue-600/10 active:scale-98">
+            <button onclick="openModal()" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow-lg shadow-blue-600/10 active:scale-98">
                 <i class="fa-solid fa-plus text-xs"></i>
                 <span>Tambah Pasien Baru</span>
             </button>
         </header>
 
         <div class="p-8 flex-1 overflow-y-auto">
-            <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
@@ -92,7 +98,7 @@
     </main>
 
     <div id="pasien-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50">
-        <div class="bg-white rounded-xl shadow-2xl w-full max-w-md mx-4 overflow-hidden border border-slate-100 max-h-[90vh] overflow-y-auto">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden border border-slate-100 max-h-[90vh] overflow-y-auto">
             <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
                 <h3 class="font-bold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-user-plus text-blue-600 text-sm"></i>
@@ -106,39 +112,39 @@
             <form id="pasien-form" class="p-6 space-y-4">
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Nomor Induk Kependudukan (NIK)</label>
-                    <input type="text" id="pasien-nik" required maxlength="16" class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition" placeholder="16 digit NIK">
+                    <input type="text" id="pasien-nik" required maxlength="16" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" placeholder="16 digit NIK">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Nama Lengkap Pasien</label>
-                    <input type="text" id="pasien-nama" required class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition" placeholder="Sesuai KTP">
+                    <input type="text" id="pasien-nama" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" placeholder="Sesuai KTP">
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Tanggal Lahir</label>
-                    <input type="date" id="pasien-tanggal-lahir" required class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition">
+                    <input type="date" id="pasien-tanggal-lahir" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition">
                 </div>
                 <div class="grid grid-cols-2 gap-4">
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Jenis Kelamin</label>
-                        <select id="pasien-jk" required class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:border-blue-500 transition">
+                        <select id="pasien-jk" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:border-blue-500 transition">
                             <option value="L">Laki-laki</option>
                             <option value="P">Perempuan</option>
                         </select>
                     </div>
                     <div>
                         <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">No. Telp / HP</label>
-                        <input type="text" id="pasien-telp" class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition" placeholder="08xxxxxxxxxx">
+                        <input type="text" id="pasien-telp" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" placeholder="08xxxxxxxxxx">
                     </div>
                 </div>
                 <div>
                     <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Alamat Tempat Tinggal</label>
-                    <textarea id="pasien-alamat" rows="2" class="w-full px-3.5 py-2 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition" placeholder="Alamat lengkap..."></textarea>
+                    <textarea id="pasien-alamat" rows="2" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" placeholder="Alamat lengkap..."></textarea>
                 </div>
                 
                 <div class="flex justify-end gap-2 pt-4 border-t border-slate-100 mt-6">
-                    <button type="button" onclick="closeModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-lg text-sm font-semibold transition">
+                    <button type="button" onclick="closeModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition">
                         Batal
                     </button>
-                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-lg text-sm font-semibold transition shadow-lg shadow-blue-600/10">
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition shadow-lg shadow-blue-600/10">
                         Simpan ke Database
                     </button>
                 </div>
@@ -153,7 +159,7 @@
 
         if (!token) {
             alert('Akses ditolak! Anda harus login terlebih dahulu.');
-            window.location.href = './index.html';
+            window.location.href = './index.html'; // Benerin redirect ke login.html lu
         } else {
             document.getElementById('user-info').innerText = `${username} (${role})`;
         }
@@ -164,65 +170,60 @@
             document.getElementById('pasien-form').reset();
         }
 
-            // UBAH FUNGSI FETCH PASIEN DI HTML LU PADA BAGIAN INI:
-  async function fetchPasien() {
-    const token = localStorage.getItem('token');
-    try {
-        const response = await fetch('http://localhost:3000/api/pasien', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+        async function fetchPasien() {
+            try {
+                const response = await fetch('http://localhost:3000/api/pasien', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(result.message || 'Gagal mengambil data pasien!');
+                }
+
+                const dataPasien = result; 
+                const tbody = document.getElementById('tabel-pasien');
+                tbody.innerHTML = '';
+
+                if (dataPasien.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400"><i class="fa-solid fa-folder-open mb-2 block text-xl text-slate-300"></i>Belum ada pasien terdaftar.</td></tr>`;
+                    return;
+                }
+
+                dataPasien.forEach(pasien => {
+                    const nama = pasien.namaPasien || '-';
+                    const tgl = pasien.tanggalLahir || '-';
+                    const jk = pasien.jenisKelamin || '-';
+                    const telp = pasien.noTelp || '-';
+
+                    const badgeJk = (jk === 'L') 
+                        ? `<span class="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full text-xs font-semibold border border-blue-100"><i class="fa-solid fa-mars mr-1"></i>Laki-laki</span>`
+                        : `<span class="bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full text-xs font-semibold border border-pink-100"><i class="fa-solid fa-venus mr-1"></i>Perempuan</span>`;
+
+                    const row = `
+                        <tr class="hover:bg-slate-50/80 transition duration-150">
+                            <td class="p-4 text-center font-bold text-slate-400 bg-slate-50/30">${pasien.id}</td>
+                            <td class="p-4 font-mono text-slate-500 tracking-wider">${pasien.nik || '-'}</td>
+                            <td class="p-4 font-semibold text-slate-900">${nama}</td>
+                            <td class="p-4 text-slate-500">${tgl}</td>
+                            <td class="p-4">${badgeJk}</td>
+                            <td class="p-4 text-slate-600 font-medium"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1.5 text-base align-middle"></i>${telp}</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                document.getElementById('tabel-pasien').innerHTML = `
+                    <tr><td colspan="6" class="p-8 text-center text-red-500 font-bold"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Error: ${error.message}</td></tr>
+                `;
             }
-        });
-
-        // 1. CUKUP AMBIL JSON SATU KALI DI SINI, MEK!
-        const result = await response.json();
-
-        // 2. JIKALAU BACKEND NGIRIM FORBIDDEN ATAU ERROR LAIN, LANGSUNG TANGKAP DI SINI
-        if (!response.ok) {
-            throw new Error(result.message || 'Gagal mengambil data pasien!');
         }
 
-        // 3. Kalau aman, variabel result ini isinya udah langsung data array pasien
-        const dataPasien = result; 
-        const tbody = document.getElementById('tabel-pasien');
-        tbody.innerHTML = '';
-
-        if (dataPasien.length === 0) {
-            tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400"><i class="fa-solid fa-folder-open mb-2 block text-xl text-slate-300"></i>Belum ada pasien terdaftar.</td></tr>`;
-            return;
-        }
-
-        dataPasien.forEach(pasien => {
-            const nama = pasien.namaPasien || '-';
-            const tgl = pasien.tanggalLahir || '-';
-            const jk = pasien.jenisKelamin || '-';
-            const telp = pasien.noTelp || '-';
-
-            const badgeJk = (jk === 'L') 
-                ? `<span class="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full text-xs font-semibold border border-blue-100"><i class="fa-solid fa-mars mr-1"></i>Laki-laki</span>`
-                : `<span class="bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full text-xs font-semibold border border-pink-100"><i class="fa-solid fa-venus mr-1"></i>Perempuan</span>`;
-
-            const row = `
-                <tr class="hover:bg-slate-50/80 transition duration-150">
-                    <td class="p-4 text-center font-bold text-slate-400 bg-slate-50/30">${pasien.id}</td>
-                    <td class="p-4 font-mono text-slate-500 tracking-wider">${pasien.nik || '-'}</td>
-                    <td class="p-4 font-semibold text-slate-900">${nama}</td>
-                    <td class="p-4 text-slate-500">${tgl}</td>
-                    <td class="p-4">${badgeJk}</td>
-                    <td class="p-4 text-slate-600 font-medium"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1.5 text-base align-middle"></i>${telp}</td>
-                </tr>
-            `;
-            tbody.innerHTML += row;
-        });
-    } catch (error) {
-        // TAMPILIN ERROR ASLI DARI BACKEND SECARA ELEGAN
-        document.getElementById('tabel-pasien').innerHTML = `
-            <tr><td colspan="6" class="p-8 text-center text-red-500 font-bold"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Error: ${error.message}</td></tr>
-        `;
-    }
-}
         document.getElementById('pasien-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const nik = document.getElementById('pasien-nik').value;
@@ -254,7 +255,7 @@
 
         function logout() {
             localStorage.clear();
-            window.location.href = './index.html';
+            window.location.href = './index.html'; // Redirect disamain ke login.html
         }
 
         fetchPasien();

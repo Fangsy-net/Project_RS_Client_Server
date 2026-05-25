@@ -3,79 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jadwal Dokter</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Klinik Harapan Indah - Jadwal Dokter</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./style.css">
 </head>
-<body class="bg-slate-100 font-sans">
+<body class="bg-slate-50 text-slate-800 h-screen w-screen flex overflow-hidden font-sans">
 
-    <div class="flex h-screen">
-        <div class="w-64 bg-slate-900 text-white p-6 flex flex-col justify-between">
-            <div>
-                <h1 class="text-xl font-bold tracking-wider mb-8 text-blue-400">JADWAL DOKTER<span class="text-xs block text-slate-400">Klinik Management</span></h1>
-                <nav class="space-y-2">
-                    <a href="dashboard-pasien.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-800 text-slate-300">Data Pasien</a>
-                    <a href="dashboard-dokter.html" class="block py-2.5 px-4 rounded transition duration-200 hover:bg-slate-800 text-slate-300">Data Dokter</a>
-                    <a href="dashboard-jadwal.html" class="block py-2.5 px-4 rounded transition duration-200 bg-blue-600 text-white font-semibold">Jadwal Dokter</a>
-                </nav>
-            </div>
-            <button onclick="localStorage.clear(); window.location.href='index.html';" class="w-full bg-red-600 hover:bg-red-700 py-2 rounded text-sm font-semibold transition">Keluar Sistem</button>
-        </div>
-
-        
-
-        <div class="flex-1 p-10 overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-slate-800">Database Jadwal Praktek Dokter</h2>
-                    <p class="text-sm text-slate-500">Kelola jam kerja dan shift operasional dokter klinik.</p>
+    <aside class="w-64 bg-slate-900 text-white h-full flex flex-col justify-between px-6 py-6 border-r border-slate-800 shrink-0">
+        <div>
+            <div class="flex items-center gap-3 px-2 py-4 border-b border-slate-800 mb-6">
+                <div class="bg-blue-600 text-white p-2 rounded-xl text-lg flex items-center justify-center shadow-lg shadow-blue-500/20">
+                    <i class="fa-solid fa-hospital-user"></i>
                 </div>
-                <button onclick="toggleModal(true); loadDokterUntukDropdown();" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded shadow transition font-medium text-sm">+ Tambah Jadwal Baru</button>
+                <div>
+                    <h2 class="text-white font-bold text-base tracking-wide leading-tight">Klinik Harapan Indah</h2>
+                    <span class="text-[10px] text-slate-400 block mt-0.5">Sistem Manajemen</span>
+                </div>
             </div>
 
-            <div id="error-message-jadwal" class="text-red-600 font-semibold mb-4"></div>
+            <nav class="space-y-1.5">
+                <a href="dashboard-pasien.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl text-slate-400 hover:bg-slate-800 hover:text-white transition group">
+                    <i class="fa-solid fa-users w-5 text-center group-hover:text-white"></i>
+                    <span>Data Pasien</span>
+                </a>
+                
+                <a href="dashboard-jadwal.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl bg-blue-600 text-white font-semibold shadow-lg shadow-blue-600/10">
+                    <i class="fa-solid fa-calendar-days w-5 text-center"></i>
+                    <span>Jadwal Dokter</span>
+                </a>
 
-            <div class="bg-white rounded-xl shadow overflow-hidden">
-                <table class="w-full text-left border-collapse">
-                    <thead>
-                        <tr class="bg-slate-800 text-white text-sm uppercase tracking-wider">
-                            <th class="py-4 px-6 font-semibold">No</th>
-                            <th class="py-4 px-6 font-semibold">Nama Dokter</th>
-                            <th class="py-4 px-6 font-semibold">Spesialisasi</th>
-                            <th class="py-4 px-6 font-semibold">Hari Praktek</th>
-                            <th class="py-4 px-6 font-semibold">Jam Operasional</th>
-                            <th class="py-4 px-6 font-semibold">Status</th>
-                            <th class="py-4 px-6 font-semibold">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabel-body-jadwal" class="divide-y divide-slate-200 text-slate-700 text-sm">
-                        <tr>
-                            <td colspan="7" class="py-8 text-center text-slate-400 italic">Sedang memuat data jadwal...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
+                <a href="dashboard-rekammedis.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl text-slate-400 hover:bg-slate-800 hover:text-white transition group">
+                    <i class="fa-solid fa-file-medical w-5 text-center group-hover:text-white"></i>
+                    <span>Riwayat Penyakit</span>
+                </a>
+            </nav>
         </div>
-    </div>
 
-    <div id="modal-jadwal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
-        <div class="bg-white rounded-xl p-6 w-[450px] shadow-2xl transition-all transform scale-100">
-            <div class="flex justify-between items-center border-b pb-3 mb-4">
-                <h3 class="text-lg font-bold text-slate-800">Registrasi Jadwal Shift Baru</h3>
-                <button onclick="toggleModal(false)" class="text-slate-400 hover:text-slate-600 text-xl font-bold">&times;</button>
+        <div class="border-t border-slate-800 pt-4 flex flex-col gap-3">
+            <div class="flex items-center gap-3 px-2">
+                <div class="w-9 h-9 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-sm text-blue-400">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div class="overflow-hidden">
+                    <p class="text-sm font-semibold text-slate-200 truncate" id="user-info">Loading...</p>
+                </div>
+            </div>
+            <button onclick="logout()" class="w-full bg-slate-800/50 hover:bg-red-950/40 hover:text-red-400 text-slate-400 py-2.5 px-4 rounded-xl text-sm font-medium transition flex items-center justify-center gap-2 border border-slate-800 hover:border-red-900/50 active:scale-[0.98]">
+                <i class="fa-solid fa-right-from-bracket text-xs"></i>
+                <span>Keluar Sistem</span>
+            </button>
+        </div>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 h-full overflow-hidden">
+        <header class="bg-white border-b border-slate-200 px-8 py-5 flex justify-between items-center shrink-0 shadow-xs">
+            <div>
+                <h1 class="text-xl font-bold text-slate-900">Jadwal Operasional Dokter</h1>
+                <p class="text-xs text-slate-500 mt-0.5">Kelola shift, hari kerja, dan kuota harian pelayanan medis dokter</p>
             </div>
             
-            <form id="form-jadwal" onsubmit="simpanJadwalBaru(event)" class="space-y-4">
+            <button onclick="openModal(); loadDokterDropdown();" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition flex items-center gap-2 shadow-lg shadow-blue-600/10 active:scale-98">
+                <i class="fa-solid fa-calendar-plus text-xs"></i>
+                <span>Tambah Jadwal Shift</span>
+            </button>
+        </header>
+
+        <div class="p-8 flex-1 overflow-y-auto">
+            <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-slate-50 text-slate-500 font-semibold text-xs tracking-wider border-b border-slate-200">
+                                <th class="p-4 w-16 text-center">ID</th>
+                                <th class="p-4">Nama Dokter</th>
+                                <th class="p-4">Spesialisasi</th>
+                                <th class="p-4">Hari Kerja</th>
+                                <th class="p-4">Jam Shift</th>
+                                <th class="p-4 w-32 text-center">Maks Kuota</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabel-jadwal" class="text-slate-600 text-sm divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="6" class="p-8 text-center text-slate-400">
+                                    <i class="fa-solid fa-circle-notch animate-spin text-blue-500 text-xl mb-2 block"></i>
+                                    Menghubungkan ke database server...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="jadwal-modal" class="hidden fixed inset-0 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center z-50">
+        <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md mx-4 overflow-hidden border border-slate-100 max-h-[90vh] overflow-y-auto">
+            <div class="px-6 py-4 border-b border-slate-100 bg-slate-50 flex justify-between items-center">
+                <h3 class="font-bold text-slate-900 flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-plus text-blue-600 text-sm"></i>
+                    <span>Atur Shift Kerja Dokter</span>
+                </h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 transition p-1 rounded-lg hover:bg-slate-200/50">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <form id="jadwal-form" class="p-6 space-y-4">
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Dokter Penanggung Jawab</label>
-                    <select id="select-dokter" class="w-full p-2.5 border rounded-lg bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
-                        <option value="">-- Memuat Daftar Dokter... --</option>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Pilih Dokter</label>
+                    <select id="select-dokter" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:border-blue-500 transition">
+                        <option value="">-- Memuat Data Dokter... --</option>
                     </select>
                 </div>
-                
+
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Hari Praktek</label>
-                    <select id="input-hari" class="w-full p-2.5 border rounded-lg bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
-                        <option value="">-- Pilih Hari --</option>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Hari Praktik</label>
+                    <select id="jadwal-hari" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm bg-white focus:outline-none focus:border-blue-500 transition">
                         <option value="Senin">Senin</option>
                         <option value="Selasa">Selasa</option>
                         <option value="Rabu">Rabu</option>
@@ -88,148 +132,155 @@
 
                 <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Jam Mulai</label>
-                        <input type="time" id="input-jam-mulai" class="w-full p-2.5 border rounded-lg bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Jam Mulai</label>
+                        <input type="time" id="jadwal-mulai" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Jam Selesai</label>
-                        <input type="time" id="input-jam-selesai" class="w-full p-2.5 border rounded-lg bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none" required>
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Jam Selesai</label>
+                        <input type="time" id="jadwal-selesai" required class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 transition">
                     </div>
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold text-slate-500 uppercase mb-1">Status Kehadiran</label>
-                    <select id="select-status" class="w-full p-2.5 border rounded-lg bg-slate-50 text-sm focus:ring-2 focus:ring-blue-500 outline-none">
-                        <option value="Aktif">Aktif</option>
-                        <option value="Cuti">Cuti</option>
-                        <option value="Tidak Hadir">Tidak Hadir</option>
-                    </select>
+                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Maksimal Kuota Pasien</label>
+                    <input type="number" id="jadwal-kuota" required min="1" class="w-full px-3.5 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition" placeholder="Contoh: 30">
                 </div>
-
-                <div class="flex justify-end space-x-3 pt-4 border-t">
-                    <button type="button" onclick="toggleModal(false)" class="px-4 py-2 border rounded-lg text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">Batal</button>
-                    <button type="submit" class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-sm font-semibold shadow transition">Simpan ke Database</button>
+                
+                <div class="flex justify-end gap-2 pt-4 border-t border-slate-100 mt-6">
+                    <button type="button" onclick="closeModal()" class="bg-slate-100 hover:bg-slate-200 text-slate-600 px-4 py-2.5 rounded-xl text-sm font-semibold transition">
+                        Batal
+                    </button>
+                    <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition shadow-lg shadow-blue-600/10">
+                        Simpan Jadwal Shift
+                    </button>
                 </div>
             </form>
         </div>
     </div>
 
     <script>
-        // Fungsi tambahan buat buka-tutup modal pop-up secara estetik
-        function toggleModal(show) {
-            const modal = document.getElementById('modal-jadwal');
-            if (show) {
-                modal.classList.remove('hidden');
-            } else {
-                modal.classList.add('hidden');
-                document.getElementById('form-jadwal').reset();
-            }
+        const token = localStorage.getItem('token');
+        const role = localStorage.getItem('userRole');
+        const username = localStorage.getItem('username');
+
+        if (!token) {
+            alert('Akses ditolak! Anda harus login terlebih dahulu.');
+            window.location.href = './login.html';
+        } else {
+            document.getElementById('user-info').innerText = `${username} (${role})`;
         }
 
-        
-        const API_URL = 'http://localhost:3000/api/jadwal';
-        const token = localStorage.getItem('token');
+        function openModal() { document.getElementById('jadwal-modal').classList.remove('hidden'); }
+        function closeModal() {
+            document.getElementById('jadwal-modal').classList.add('hidden');
+            document.getElementById('jadwal-form').reset();
+        }
 
+        // ==========================================
+        // FETCH JADWAL DOKTER (READ)
+        // ==========================================
         async function fetchJadwal() {
             try {
-                const response = await fetch(API_URL, {
-                    headers: { 'Authorization': `Bearer ${token}` }
+                const response = await fetch('http://localhost:3000/api/jadwal', {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    }
                 });
-                const data = await response.json();
-                if (!response.ok) throw new Error(data.message || 'Gagal load jadwal.');
 
-                const tbody = document.getElementById('tabel-body-jadwal');
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.message || 'Gagal mengambil data jadwal!');
+
+                const tbody = document.getElementById('tabel-jadwal');
                 tbody.innerHTML = '';
 
-                if(data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="py-6 text-center text-slate-400">Belum ada jadwal praktek dokter terdaftar.</td></tr>';
+                if (result.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400"><i class="fa-solid fa-folder-open mb-2 block text-xl text-slate-300"></i>Belum ada jadwal shift dokter yang diatur.</td></tr>`;
                     return;
                 }
 
-                data.forEach((jadwal, index) => {
-                    tbody.innerHTML += `
-                        <tr class="hover:bg-slate-50 transition">
-                            <td class="py-4 px-6">${index + 1}</td>
-                            <td class="py-4 px-6 font-semibold text-slate-900">${jadwal.dokter ? jadwal.dokter.namaDokter : 'Dokter Terhapus'}</td>
-                            <td class="py-4 px-6 text-slate-500">${jadwal.dokter ? jadwal.dokter.spesialisasi : '-'}</td>
-                            <td class="py-4 px-6">${jadwal.hari}</td>
-                            <td class="py-4 px-6 font-mono">${jadwal.jamMulai} - ${jadwal.jamSelesai}</td>
-                            <td class="py-4 px-6">
-                                <span class="px-2.5 py-1 text-xs font-bold rounded-full ${jadwal.status === 'Aktif' ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}">
-                                    ${jadwal.status}
-                                </span>
-                            </td>
-                            <td class="py-4 px-6">
-                                <button class="text-red-600 hover:text-red-900 font-medium text-xs uppercase tracking-wider" onclick="hapusJadwal(${jadwal.id})">Hapus</button>
-                            </td>
+                result.forEach(j => {
+                    const namaDokter = j.dokter ? j.dokter.namaDokter : 'Dokter Tidak Diketahui';
+                    const spesialis = j.dokter ? j.dokter.spesialisasi : '-';
+                    const jamShift = `${j.jamMulai ? j.jamMulai.substring(0,5) : ''} - ${j.jamSelesai ? j.jamSelesai.substring(0,5) : ''}`;
+
+                    const row = `
+                        <tr class="hover:bg-slate-50/80 transition duration-150">
+                            <td class="p-4 text-center font-bold text-slate-400 bg-slate-50/30">${j.id}</td>
+                            <td class="p-4 font-semibold text-slate-900">${namaDokter}</td>
+                            <td class="p-4 text-slate-500"><span class="bg-slate-100 px-2 py-0.5 rounded-md text-xs font-medium text-slate-600">${spesialis}</span></td>
+                            <td class="p-4 text-slate-700 font-medium"><i class="fa-regular fa-clock text-blue-500 mr-1.5"></i>${j.hari || '-'}</td>
+                            <td class="p-4 font-mono text-xs text-slate-600">${jamShift}</td>
+                            <td class="p-4 text-center"><span class="bg-blue-50 text-blue-700 px-2.5 py-0.5 rounded-full text-xs font-bold border border-blue-100">${j.kuotaMaksimal || j.kuota || '0'} Pasien</span></td>
                         </tr>
                     `;
+                    tbody.innerHTML += row;
                 });
             } catch (error) {
-                document.getElementById('error-message-jadwal').innerText = "Gagal Ambil Jadwal: " + error.message;
+                document.getElementById('tabel-jadwal').innerHTML = `
+                    <tr><td colspan="6" class="p-8 text-center text-red-500 font-bold"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Error: ${error.message}</td></tr>
+                `;
             }
         }
 
-        async function loadDokterUntukDropdown() {
+        // ==========================================
+        // LOAD DROPDOWN DATA DOKTER KE MODAL
+        // ==========================================
+        async function loadDokterDropdown() {
             try {
-                const res = await fetch('http://localhost:3000/api/dokter', {
+                const response = await fetch('http://localhost:3000/api/dokter', {
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                const data = await res.json();
+                const dataDokter = await response.json();
                 const selectDokter = document.getElementById('select-dokter');
                 selectDokter.innerHTML = '<option value="">-- Pilih Dokter --</option>';
-                data.forEach(dokter => {
-                    selectDokter.innerHTML += `<option value="${dokter.id}">${dokter.namaDokter} (${dokter.spesialisasi})</option>`;
+                dataDokter.forEach(d => {
+                    selectDokter.innerHTML += `<option value="${d.id}">${d.namaDokter} (${d.spesialisasi})</option>`;
                 });
             } catch (err) {
-                console.error(err);
+                console.error("Gagal memuat dropdown dokter:", err);
             }
         }
 
-        async function simpanJadwalBaru(event) {
-            event.preventDefault();
+        // ==========================================
+        // POST DATA JADWAL BARU (CREATE)
+        // ==========================================
+        document.getElementById('jadwal-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
             const dokterId = document.getElementById('select-dokter').value;
-            const hari = document.getElementById('input-hari').value;
-            const jamMulai = document.getElementById('input-jam-mulai').value;
-            const jamSelesai = document.getElementById('input-jam-selesai').value;
-            const status = document.getElementById('select-status').value;
+            const hari = document.getElementById('jadwal-hari').value;
+            const jamMulai = document.getElementById('jadwal-mulai').value;
+            const jamSelesai = document.getElementById('jadwal-selesai').value;
+            const kuotaMaksimal = document.getElementById('jadwal-kuota').value;
 
             try {
-                const response = await fetch(API_URL, {
+                const response = await fetch('http://localhost:3000/api/jadwal', {
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${token}`,
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ dokterId, hari, jamMulai, jamSelesai, status })
+                    body: JSON.stringify({ dokterId, hari, jamMulai, jamSelesai, kuotaMaksimal, kuota: kuotaMaksimal })
                 });
-                const result = await response.json();
-                if (!response.ok) return alert(`Gagal: ${result.message}`);
-                
-                alert('Jadwal dokter berhasil disimpan, Mek!');
-                toggleModal(false);
-                fetchJadwal();
-            } catch (error) {
-                alert('Eror Server: ' + error.message);
-            }
-        }
 
-        async function hapusJadwal(id) {
-            if (!confirm('Yakin mau hapus jadwal ini, Tot?')) return;
-            try {
-                const response = await fetch(`${API_URL}/${id}`, {
-                    method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
                 const result = await response.json();
-                alert(result.message);
-                fetchJadwal();
+                if (!response.ok) throw new Error(result.message || 'Gagal menyimpan jadwal!');
+
+                closeModal();
+                fetchJadwal(); 
             } catch (error) {
                 alert(error.message);
             }
+        });
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = './index.html';
         }
 
-        document.addEventListener('DOMContentLoaded', fetchJadwal);
+        // Jalankan fetch otomatis saat dokumen siap
+        fetchJadwal();
     </script>
 </body>
 </html>
