@@ -1,89 +1,88 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const Dokter = require('../models/Dokter');
+const bcrypt = require('bcryptjs'); // Atau 'bcrypt' sesuai yang lu install
+const User = require('../models/User'); // Pastikan path model User bener
 
-// 1. REGISTER USER BARU
+// 1. ROUTE REGISTER USER BARU
 router.post('/register', async (req, res) => {
     try {
-        const { username, email, password, role, namaDokter, spesialisasi, noIzinPraktek } = req.body;
+        const { username, email, password, role, dokterId } = req.body;
 
-        // Validasi input kosong dasar
-        if (!username || !email || !password || !role) {
-            return res.status(400).json({ message: 'Semua field utama wajib diisi!' });
+        // Cek apakah username sudah dipakai
+        const userExists = await User.findOne({ where: { username } });
+        if (userExists) {
+            return res.status(400).json({ message: 'Username sudah terdaftar!' });
         }
 
-        // Kriptografi: Hashing password dengan salt round 10
+        // Cek apakah email sudah dipakai
+        const emailExists = await User.findOne({ where: { email } });
+        if (emailExists) {
+            return res.status(400).json({ message: 'Email sudah terdaftar!' });
+        }
+
+        // Hash password sebelum disimpan ke MySQL
         const salt = await bcrypt.genSalt(10);
         const hashedPassword = await bcrypt.hash(password, salt);
 
-        // Simpan user ke tabel users
+        // Simpan user baru ke database
         const userBaru = await User.create({
             username,
             email,
-            password: hashedPassword, // Menyimpan versi hash
-            role
+            password: hashedPassword,
+            role: role,
+            dokterId: dokterId || null
         });
 
-        // Tantangan Tambahan: Jika role-nya dokter, buat juga profilnya di tabel dokter
-        if (role === 'dokter') {
-            if (!namaDokter || !spesialisasi || !noIzinPraktek) {
-                return res.status(400).json({ message: 'Data profil dokter belum lengkap!' });
-            }
-            await Dokter.create({
-                userId: userBaru.id,
-                namaDokter,
-                spesialisasi,
-                noIzinPraktek
-            });
-        }
+        return res.status(201).json({ 
+            message: 'User berhasil didaftarkan!', 
+            userId: userBaru.id 
+        });
 
-        res.status(201).json({ message: 'Registrasi berhasil!', userId: userBaru.id });
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("ERROR REGISTER:", error);
+        return res.status(500).json({ message: error.message });
     }
 });
 
-// 2. LOGIN USER
+// 2. ROUTE LOGIN
 router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
         // Cari user berdasarkan username
-        const user = await User.findOne({ where: {username} });
+        const user = await User.findOne({ where: { username } });
         if (!user) {
-            return res.status(401).json({ message: 'Username atau password salah!' });
+            return res.status(404).json({ message: 'Username tidak ditemukan!' });
         }
 
-        // Bandingkan password inputan dengan password hash di database
+        // Cek password cocok atau kagak
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(401).json({ message: 'Username atau password salah!' });
+            return res.status(400).json({ message: 'Password salah!' });
         }
 
-        // Ambil data ID dokter jika user tersebut adalah dokter (untuk keperluan RBAC nanti)
-        let dokterId = null;
-        if (user.role === 'dokter') {
-            const profilDokter = await Dokter.findOne({ where: { userId: user.id } });
-            if (profilDokter) dokterId = profilDokter.id;
-        }
-
-        // Otorisasi: Buat JSON Web Token (JWT) yang berlaku selama 1 hari
+        // Generate Token JWT (Bawa id, role, dan dokterId ke front-end)
         const token = jwt.sign(
-            { id: user.id, role: user.role, dokterId: dokterId },
-            process.env.JWT_SECRET,
+            { id: user.id, role: user.role, dokterId: user.dokterId },
+            process.env.JWT_SECRET || 'manchesterunitedtreblewinnerinsyaallah',
             { expiresIn: '24h' }
         );
 
-        res.status(200).json({
+        // Kembalikan token beserta data user dasar
+        return res.status(200).json({
             message: 'Login berhasil!',
             token,
-            user: { id: user.id, username: user.username, role: user.role }
+            user: {
+                id: user.id,
+                username: user.username,
+                role: user.role
+            }
         });
+
     } catch (error) {
-        res.status(500).json({ error: error.message });
+        console.error("ERROR LOGIN:", error);
+        return res.status(500).json({ message: error.message });
     }
 });
 

@@ -1,80 +1,142 @@
 const express = require('express');
 const router = express.Router();
-const Pasien = require('../models/Pasien'); 
-const grantAccess = require('../middleware/roleMiddleware'); // Pastikan path ini benar
+const { Op } = require('sequelize');
+const Pasien = require('../models/Pasien');
+const Dokter = require('../models/Dokter');
+const verifyToken = require('../middleware/authMiddleware'); // Pakai verifyToken MU kita, Tot!
 
-// ==========================================
-// 1. GET ALL PASIEN (Bisa diakses Admin, Resepsionis, Dokter)
-// ==========================================
-router.get('/', grantAccess('resepsionis', 'dokter'), async (req, res) => {
+// 1. GET ALL PASIEN (Resepsionis liat semua, Dokter liat yang dia handle)
+router.get('/', verifyToken, async (req, res) => {
     try {
-        const { search } = req.query;
-        let queryOptions = {};
+        const userRole = req.user.role;
+        const dokterId = req.user.dokterId;
+        let condition = {};
 
-        // Fitur pencarian berdasarkan nama jika ada query ?search=...
-        if (search) {
-            const { Op } = require('sequelize');
-            queryOptions.where = {
-                namaPasien: { [Op.like]: `%${search}%` }
-            };
+        if (userRole === 'dokter') {
+            condition.dokterId = dokterId;
+        } else if (userRole !== 'resepsionis') {
+            return res.status(403).json({ message: 'Forbidden: Anda tidak memiliki hak akses untuk aksi ini!' });
         }
 
-        const dataPasien = await Pasien.findAll(queryOptions);
+        // Variabel penampung diganti 'daftarPasien' biar gak bentrok sama Model Pasien!
+        const daftarPasien = await Pasien.findAll({
+            where: condition
+        });
+        return res.status(200).json(daftarPasien);
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+// 2. GET PASIEN BY ID
+router.get('/:id', verifyToken, async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userRole = req.user.role;
+        const dokterId = req.user.dokterId;
+
+        const dataPasien = await Pasien.findByPk(id, {
+            include: [{ model: Dokter, as: 'dokter', attributes: ['id', 'namaDokter', 'spesialisasi'] }]
+        });
+
+        if (!dataPasien) {
+            return res.status(404).json({ message: 'Data pasien tidak ditemukan!' });
+        }
+
+        // Validasi hak akses dokter
+        if (userRole === 'dokter' && dataPasien.dokterId !== dokterId) {
+            return res.status(403).json({ message: 'Forbidden: Anda tidak berhak melihat pasien ini!' });
+        }
+
         return res.status(200).json(dataPasien);
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 });
 
-// ==========================================
-// 2. POST / CREATE PASIEN (Hanya Admin & Resepsionis)
-// ==========================================
-router.post('/', grantAccess('resepsionis'), async (req, res) => {
+// 3. CREATE PASIEN BARU (Hanya Resepsionis)
+router.post('/', verifyToken, async (req, res) => {
     try {
-        const pasienBaru = await Pasien.create(req.body);
-        return res.status(201).json({ 
-            message: 'Data pasien berhasil disimpan!', 
-            data: pasienBaru 
-        });
-    } catch (error) {
-        return res.status(500).json({ error: error.message });
-    }
-});
-
-// ==========================================
-// 3. PUT / UPDATE PASIEN (Hanya Admin & Resepsionis)
-// ==========================================
-router.put('/:id', grantAccess('resepsionis'), async (req, res) => {
-    try {
-        const { id } = req.params;
-        const [updatedRows] = await Pasien.update(req.body, { where: { id } });
-
-        if (updatedRows === 0) {
-            return res.status(404).json({ message: 'Data pasien tidak ditemukan atau tidak ada perubahan!' });
+        if (req.user.role !== 'resepsionis') {
+            return res.status(403).json({ message: 'Forbidden: Hanya Resepsionis yang dapat menambah pasien!' });
         }
 
-        const dataTerupdate = await Pasien.findByPk(id);
-        return res.status(200).json({ 
-            message: 'Data pasien berhasil diperbarui!', 
-            data: dataTerupdate 
-        });
+        const { nik, namaPasien, tanggalLahir, jenisKelamin, alamat, noTelp, dokterId } = req.body;
+
+        if (!nik || !namaPasien || !tanggalLahir || !jenisKelamin) {
+            return res.status(400).json({ message: 'Field nik, namaPasien, tanggalLahir, dan jenisKelamin wajib diisi.' });
+        }
+
+        const existingPasien = await Pasien.findOne({ where: { nik } });
+        if (existingPasien) {
+            return res.status(400).json({ message: 'NIK pasien sudah terdaftar.' });
+        }
+
+        if (dokterId) {
+            const dokter = await Dokter.findByPk(dokterId);
+            if (!dokter) {
+                return res.status(400).json({ message: 'ID dokter tidak valid.' });
+            }
+        }
+
+        const pasienBaru = await Pasien.create({ nik, namaPasien, tanggalLahir, jenisKelamin, alamat, noTelp, dokterId });
+        return res.status(201).json({ message: 'Data pasien berhasil disimpan!', data: pasienBaru });
     } catch (error) {
         return res.status(500).json({ error: error.message });
     }
 });
 
-// ==========================================
-// 4. DELETE PASIEN (Hanya Admin & Resepsionis)
-// ==========================================
-router.delete('/:id', grantAccess('resepsionis'), async (req, res) => {
+// 4. UPDATE PASIEN BY ID (Hanya Resepsionis)
+router.put('/:id', verifyToken, async (req, res) => {
     try {
+        if (req.user.role !== 'resepsionis') {
+            return res.status(403).json({ message: 'Forbidden: Hanya Resepsionis yang dapat mengubah data pasien!' });
+        }
+
+        const { id } = req.params;
+        const { nik, dokterId } = req.body;
+
+        if (nik) {
+            const pasienExisting = await Pasien.findOne({ where: { nik, id: { [Op.ne]: id } } });
+            if (pasienExisting) {
+                return res.status(400).json({ message: 'NIK pasien sudah digunakan oleh pasien lain.' });
+            }
+        }
+
+        if (dokterId) {
+            const dokter = await Dokter.findByPk(dokterId);
+            if (!dokter) {
+                return res.status(400).json({ message: 'ID dokter tidak valid.' });
+            }
+        }
+
+        const [updatedRows] = await Pasien.update(req.body, { where: { id } });
+        if (updatedRows === 0) {
+            return res.status(404).json({ message: 'Data pasien tidak ditemukan atau tidak ada perubahan.' });
+        }
+
+        const pasienTerupdate = await Pasien.findByPk(id, {
+            include: [{ model: Dokter, as: 'dokter', attributes: ['id', 'namaDokter', 'spesialisasi'] }]
+        });
+
+        return res.status(200).json({ message: 'Data pasien berhasil diperbarui!', data: pasienTerupdate });
+    } catch (error) {
+        return res.status(500).json({ error: error.message });
+    }
+});
+
+// 5. DELETE PASIEN BY ID (Hanya Resepsionis)
+router.delete('/:id', verifyToken, async (req, res) => {
+    try {
+        if (req.user.role !== 'resepsionis') {
+            return res.status(403).json({ message: 'Forbidden: Hanya Resepsionis yang dapat menghapus data pasien!' });
+        }
+
         const { id } = req.params;
         const deleted = await Pasien.destroy({ where: { id } });
-
         if (!deleted) {
             return res.status(404).json({ message: 'Data pasien tidak ditemukan!' });
         }
-
         return res.status(200).json({ message: 'Data pasien berhasil dihapus dari sistem!' });
     } catch (error) {
         return res.status(500).json({ error: error.message });

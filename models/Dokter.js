@@ -4,10 +4,11 @@ const User = require('./User');
 
 const Dokter = sequelize.define('Dokter', {
     id: { type: DataTypes.INTEGER, autoIncrement: true, primaryKey: true },
-    userId: { type: DataTypes.INTEGER, allowNull: false, field: 'user_id' },
+    userId: { type: DataTypes.INTEGER, allowNull: true, field: 'user_id' },
     namaDokter: { type: DataTypes.STRING, allowNull: false, field: 'nama_dokter' },
     spesialisasi: { type: DataTypes.STRING, allowNull: false },
-    noIzinPraktek: { type: DataTypes.STRING, allowNull: false, unique: true, field: 'no_izin_praktek' }
+    noIzinPraktek: { type: DataTypes.STRING, allowNull: true, unique: true, field: 'no_izin_praktek' },
+    noTelp: { type: DataTypes.STRING, allowNull: true, field: 'no_telp' }
 }, { tableName: 'dokter' });
 
 // Relasi 1:1 antara User dan Dokter

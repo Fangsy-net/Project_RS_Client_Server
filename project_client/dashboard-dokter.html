@@ -17,7 +17,7 @@
                     <i class="fa-solid fa-hospital-user"></i>
                 </div>
                 <div>
-                    <h2 class="text-white font-bold text-base tracking-wide leading-tight">Kasir UMKM</h2>
+                    <h2 class="text-white font-bold text-base tracking-wide leading-tight">Klinik Harapan Indah</h2>
                     <span class="text-xs text-slate-500">Klinik Management</span>
                 </div>
             </div>
@@ -30,10 +30,6 @@
                 <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-600 text-white font-medium transition shadow-md shadow-blue-600/10">
                     <i class="fa-solid fa-user-doctor w-5 text-center"></i>
                     <span>Data Dokter</span>
-                </a>
-                <a href="#" onclick="alert('Modul Transaksi Segera Datang!')" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-slate-200 font-medium transition group">
-                    <i class="fa-solid fa-cash-register w-5 text-center text-slate-500 group-hover:text-blue-500 transition"></i>
-                    <span>Transaksi Kasir</span>
                 </a>
             </nav>
         </div>
@@ -138,7 +134,7 @@
 
         if (!token) {
             alert('Akses ditolak! Silahkan login terlebih dahulu.');
-            window.location.href = './login.html';
+            window.location.href = './index.html';
         } else {
             document.getElementById('user-info').innerText = `${username} (${role})`;
         }
@@ -152,7 +148,7 @@
         // FETCH DATA DOKTER
         async function fetchDokter() {
             try {
-                const response = await fetch('http://localhost:3000/api/dokter', { // Sesuaikan endpoint backend lu, Tot
+                const response = await fetch('http://localhost:3000/api/dokter', { 
                     method: 'GET',
                     headers: {
                         'Authorization': `Bearer ${token}`,
@@ -225,7 +221,7 @@
 
         function logout() {
             localStorage.clear();
-            window.location.href = './login.html';
+            window.location.href = './index.html';
         }
 
         fetchDokter();

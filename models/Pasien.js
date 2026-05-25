@@ -8,7 +8,14 @@ const Pasien = sequelize.define('Pasien', {
     tanggalLahir: { type: DataTypes.DATEONLY, allowNull: false, field: 'tanggal_lahir' },
     jenisKelamin: { type: DataTypes.ENUM('L', 'P'), allowNull: false, field: 'jenis_kelamin' },
     alamat: { type: DataTypes.TEXT },
-    noTelp: { type: DataTypes.STRING, field: 'no_telp' }
+    noTelp: { type: DataTypes.STRING, field: 'no_telp' },
+    dokterId: { 
+        type: DataTypes.INTEGER, 
+        field: 'dokter_id',
+        allowNull: true // Bisa null pas awal didaftar resepsionis sebelum milih dokter
+    }
 }, { tableName: 'pasien' });
+
+
 
 module.exports = Pasien;

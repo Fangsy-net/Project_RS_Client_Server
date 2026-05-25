@@ -3,127 +3,118 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Kasir UMKM Klinik</title>
+    <title>Login Klinik UMKM</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="./style.css">
 </head>
-<body class="bg-slate-50 min-h-screen flex items-center justify-center p-4">
-
-    <div class="bg-white rounded-2xl shadow-xl border border-slate-100 overflow-hidden w-full max-w-4xl grid md:grid-cols-2 min-h-[550px]">
-        
-        <div class="bg-slate-900 p-10 flex flex-col justify-between relative overflow-hidden hidden md:flex text-slate-300">
-            <div class="absolute -top-10 -right-10 w-40 h-40 bg-blue-600/10 rounded-full blur-2xl"></div>
-            <div class="absolute -bottom-20 -left-10 w-60 h-60 bg-emerald-500/10 rounded-full blur-3xl"></div>
-
-            <div class="flex items-center gap-3 relative z-10">
-                <div class="bg-blue-600 text-white p-2 rounded-xl text-lg flex items-center justify-center shadow-lg shadow-blue-500/30">
-                    <i class="fa-solid fa-hospital-user"></i>
-                </div>
-                <div>
-                    <h2 class="text-white font-bold text-lg tracking-wide leading-tight">Kasir UMKM</h2>
-                    <span class="text-xs text-slate-500">Klinik Management System</span>
-                </div>
+<body class="bg-gradient-to-br from-slate-100 via-slate-50 to-white min-h-screen flex items-center justify-center px-4">
+    
+    <div class="w-full max-w-md bg-white border border-slate-200 rounded-3xl shadow-2xl overflow-hidden">
+        <div class="bg-blue-600 px-8 py-10 text-center text-white">
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-3xl bg-slate-900 mb-4 shadow-lg shadow-slate-900/20">
+                <i class="fa-solid fa-hospital text-2xl"></i>
             </div>
-
-            <div class="my-auto relative z-10 space-y-4 pr-4">
-                <h3 class="text-2xl font-bold text-white leading-tight">Kelola Data Pasien & Transaksi Jauh Lebih Cepat.</h3>
-                <p class="text-sm text-slate-400 leading-relaxed">Sistem POS Terintegrasi untuk efisiensi administrasi klinik, rekam medis, hingga manajemen kasir UMKM yang akurat.</p>
-            </div>
-
-            <div class="text-xs text-slate-500 relative z-10">
-                &copy; 2026 Klinik Digital Pro. All rights reserved.
-            </div>
+            <h1 class="text-3xl font-bold tracking-tight">Selamat Datang</h1>
+            <p class="mt-2 text-slate-200">Masuk untuk mengelola data pasien dan dokter klinik.</p>
         </div>
 
-        <div class="p-8 md:p-12 flex flex-col justify-center">
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold text-slate-900">Selamat Datang Kembali</h2>
-                <p class="text-sm text-slate-500 mt-1">Silahkan masuk menggunakan akun resepsionis atau dokter Anda.</p>
-            </div>
-
-            <form id="login-form" class="space-y-5">
+        <div class="p-8">
+            <form id="login-form" class="space-y-6">
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Username</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                            <i class="fa-solid fa-user text-sm"></i>
-                        </span>
-                        <input type="text" id="username" required class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition placeholder-slate-400" placeholder="Masukkan username...">
-                    </div>
+                    <label for="username" class="block text-sm font-semibold text-slate-700">Username</label>
+                    <input id="username" type="text" required placeholder="Username Anda"
+                        class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-bold uppercase tracking-wider text-slate-500 mb-1.5">Password</label>
-                    <div class="relative">
-                        <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
-                            <i class="fa-solid fa-lock text-sm"></i>
-                        </span>
-                        <input type="password" id="password" required class="w-full pl-10 pr-4 py-2.5 border border-slate-200 rounded-lg text-sm focus:outline-none focus:border-blue-500 transition placeholder-slate-400" placeholder="••••••••">
-                    </div>
+                    <label for="password" class="block text-sm font-semibold text-slate-700">Password</label>
+                    <input id="password" type="password" required placeholder="Password Anda"
+                        class="mt-2 w-full rounded-2xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-100">
                 </div>
 
-                <div class="flex items-center justify-between text-xs font-medium pt-1">
-                    <label class="flex items-center gap-2 text-slate-600 cursor-pointer">
-                        <input type="checkbox" class="rounded border-slate-300 text-blue-600 focus:ring-blue-500/20">
-                        <span>Ingat saya</span>
-                    </label>
-                    <a href="#" onclick="alert('Hubungi admin database buat reset password, Mek!')" class="text-blue-600 hover:underline">Lupa password?</a>
-                </div>
+                <div id="login-error" class="hidden rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700"></div>
 
-                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg text-sm font-semibold transition shadow-lg shadow-blue-600/10 active:scale-[0.98] flex items-center justify-center gap-2 mt-2">
-                    <span>Masuk ke Sistem</span>
-                    <i class="fa-solid fa-right-to-bracket text-xs"></i>
+                <button type="submit" class="w-full rounded-2xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-blue-500/20 transition hover:bg-blue-700 active:scale-[0.99]">
+                    Masuk Sekarang
                 </button>
             </form>
-        </div>
 
+            <div class="mt-6 text-center text-sm text-slate-500">
+                Gunakan akun admin, resepsionis, atau dokter untuk masuk.
+            </div>
+        </div>
     </div>
 
     <script>
-        document.getElementById('login-form').addEventListener('submit', async (e) => {
-            e.preventDefault();
+        // =========================================================================
+        // 1. AUTO-REDIRECT CHECKER (Biar gak usah login ulang kalau token masih nempel)
+        // =========================================================================
+        const token = localStorage.getItem('token');
+        const savedRole = localStorage.getItem('userRole');
 
-            const usernameInput = document.getElementById('username').value;
-            const passwordInput = document.getElementById('password').value;
+        if (token) {
+            if (savedRole === 'dokter') {
+                window.location.href = './dashboard-dokter.html';
+            } else if (savedRole === 'resepsionis') {
+                window.location.href = './dashboard-pasien.html'; 
+            } 
+        }
 
-            // Ganti teks tombol pas loading biar interaktif
-            const btn = e.target.querySelector('button[type="submit"]');
-            const originalText = btn.innerHTML;
-            btn.innerHTML = `<i class="fa-solid fa-circle-notch animate-spin text-xs"></i> <span>Memvalidasi...</span>`;
-            btn.disabled = true;
+        const form = document.getElementById('login-form');
+        const errorBox = document.getElementById('login-error');
+
+        // =========================================================================
+        // 2. PROSES TEMBAK API LOGIN (SUBMIT EVENT)
+        // =========================================================================
+        form.addEventListener('submit', async (event) => {
+            event.preventDefault();
+            errorBox.classList.add('hidden');
+            errorBox.textContent = '';
+
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
 
             try {
-                const response = await fetch('http://localhost:3000/api/auth/login', { // Sesuaikan endpoint login asli lu, Tot
+                const response = await fetch('http://localhost:3000/api/auth/login', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
                     },
-                    body: JSON.stringify({ 
-                        username: usernameInput, 
-                        password: passwordInput 
-                    })
+                    body: JSON.stringify({ username, password })
                 });
 
-                const result = await response.json();
-
+                const data = await response.json();
+                
                 if (!response.ok) {
-                    throw new Error(result.message || 'Username atau password salah!');
+                    throw new Error(data.message || 'Login gagal. Periksa kembali username dan password.');
                 }
 
-                // SIMPAN CREDENTIALS KE BROWSER
-                localStorage.setItem('token', result.token);
-                localStorage.setItem('userRole', result.role || result.user?.role || 'resepsionis');
-                localStorage.setItem('username', result.username || usernameInput);
+                // Amankan berkas autentikasi ke LocalStorage Browser
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('userRole', data.user.role);
+                localStorage.setItem('username', data.user.username);
+                
+                // Jika user yang login adalah dokter dan punya kaitan dokterId, amankan juga!
+                if (data.user.dokterId) {
+                    localStorage.setItem('dokterId', data.user.dokterId);
+                }
 
-                // REDIRECT LANGSUNG KE DASHBOARD PASIEN YANG BARU
-                window.location.href = './dashboard-pasien.html';
+                // =========================================================================
+                // 3. DISTRIBUSI HALAMAN SESUAI ROLE KASTA BACKEND
+                // =========================================================================
+                if (data.user.role === 'dokter') {
+                    window.location.href = './dashboard-dokter.html';
+                } else if (data.user.role === 'resepsionis') {
+                    window.location.href = './dashboard-pasien.html'; // Lempar ke dashboard utama
+                } else {
+                    window.location.href = './dashboard-pasien.html';
+                }
 
             } catch (error) {
-                alert('Login Gagal: ' + error.message);
-                // Kembalikan tombol ke semula
-                btn.innerHTML = originalText;
-                btn.disabled = false;
+                // Tampilkan pesan kegagalan dari catch blok Express ke text box merah
+                errorBox.textContent = error.message;
+                errorBox.classList.remove('hidden');
             }
         });
     </script>

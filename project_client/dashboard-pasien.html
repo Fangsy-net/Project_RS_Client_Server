@@ -10,33 +10,29 @@
 </head>
 <body class="bg-slate-50 text-slate-800 min-h-screen flex">
 
-    <aside class="w-64 bg-slate-900 text-slate-400 flex flex-col justify-between p-4 shrink-0 shadow-xl">
+    <aside class="w-64 bg-slate-900 text-white h-screen flex flex-col justify-between px-6 py-8">
         <div>
             <div class="flex items-center gap-3 px-2 py-4 border-b border-slate-800 mb-6">
                 <div class="bg-blue-600 text-white p-2 rounded-lg text-lg flex items-center justify-center shadow-md shadow-blue-500/20">
                     <i class="fa-solid fa-hospital-user"></i>
                 </div>
                 <div>
-                    <h2 class="text-white font-bold text-base tracking-wide leading-tight">Kasir UMKM</h2>
-                    <span class="text-xs text-slate-500">Klinik Management</span>
+                    <h2 class="text-white font-bold text-base tracking-wide leading-tight">Klinik Harapan Indah</h2>
                 </div>
             </div>
-
-            <nav class="space-y-1">
-                <a href="#" class="flex items-center gap-3 px-4 py-3 rounded-lg bg-blue-600 text-white font-medium transition shadow-md shadow-blue-600/10">
-                    <i class="fa-solid fa-users w-5 text-center"></i>
-                    <span>Data Pasien</span>
-                </a>
-                <a href="./dashboard-dokter.html" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-slate-200 font-medium transition group">
-                    <i class="fa-solid fa-user-doctor w-5 text-center text-slate-500 group-hover:text-blue-500 transition"></i>
-                    <span>Data Dokter</span>
-                </a>
-                <a href="#" onclick="alert('Modul Transaksi Segera Datang!')" class="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-slate-800 hover:text-slate-200 font-medium transition group">
-                    <i class="fa-solid fa-cash-register w-5 text-center text-slate-500 group-hover:text-blue-500 transition"></i>
-                    <span>Transaksi Kasir</span>
-                </a>
-            </nav>
         </div>
+
+        <nav class="space-y-1">
+    <a href="dashboard-pasien.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl bg-blue-600 text-white font-semibold">
+        <i class="fa-solid fa-users"></i>
+        <span>Data Pasien</span>
+    </a>
+    
+    <a href="dashboard-jadwal.html" class="flex items-center space-x-3 py-3 px-4 rounded-2xl text-slate-400 hover:bg-slate-800 hover:text-white transition">
+        <i class="fa-solid fa-calendar-days"></i>
+        <span>Jadwal Dokter</span>
+    </a>
+</nav>
 
         <div class="border-t border-slate-800 pt-4 flex flex-col gap-3">
             <div class="flex items-center gap-3 px-2">
@@ -168,57 +164,65 @@
             document.getElementById('pasien-form').reset();
         }
 
-        async function fetchPasien() {
-            try {
-                const response = await fetch('http://localhost:3000/api/pasien', {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                if (!response.ok) throw new Error('Gagal mengambil data pasien!');
-
-                const dataPasien = await response.json();
-                const tbody = document.getElementById('tabel-pasien');
-                tbody.innerHTML = '';
-
-                if (dataPasien.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400"><i class="fa-solid fa-folder-open mb-2 block text-xl text-slate-300"></i>Belum ada pasien terdaftar.</td></tr>`;
-                    return;
-                }
-
-                dataPasien.forEach(pasien => {
-                    const nama = pasien.namaPasien || '-';
-                    const tgl = pasien.tanggalLahir || '-';
-                    const jk = pasien.jenisKelamin || '-';
-                    const telp = pasien.noTelp || '-';
-
-                    // Modif badge gender biar estetik
-                    const badgeJk = (jk === 'L') 
-                        ? `<span class="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full text-xs font-semibold border border-blue-100"><i class="fa-solid fa-mars mr-1"></i>Laki-laki</span>`
-                        : `<span class="bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full text-xs font-semibold border border-pink-100"><i class="fa-solid fa-venus mr-1"></i>Perempuan</span>`;
-
-                    const row = `
-                        <tr class="hover:bg-slate-50/80 transition duration-150">
-                            <td class="p-4 text-center font-bold text-slate-400 bg-slate-50/30">${pasien.id}</td>
-                            <td class="p-4 font-mono text-slate-500 tracking-wider">${pasien.nik || '-'}</td>
-                            <td class="p-4 font-semibold text-slate-900">${nama}</td>
-                            <td class="p-4 text-slate-500">${tgl}</td>
-                            <td class="p-4">${badgeJk}</td>
-                            <td class="p-4 text-slate-600 font-medium"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1.5 text-base align-middle"></i>${telp}</td>
-                        </tr>
-                    `;
-                    tbody.innerHTML += row;
-                });
-            } catch (error) {
-                document.getElementById('tabel-pasien').innerHTML = `
-                    <tr><td colspan="6" class="p-8 text-center text-red-500 font-bold"><i class="fa-solid fa-triangle-exclamation mr-2"></i>${error.message}</td></tr>
-                `;
+            // UBAH FUNGSI FETCH PASIEN DI HTML LU PADA BAGIAN INI:
+  async function fetchPasien() {
+    const token = localStorage.getItem('token');
+    try {
+        const response = await fetch('http://localhost:3000/api/pasien', {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             }
+        });
+
+        // 1. CUKUP AMBIL JSON SATU KALI DI SINI, MEK!
+        const result = await response.json();
+
+        // 2. JIKALAU BACKEND NGIRIM FORBIDDEN ATAU ERROR LAIN, LANGSUNG TANGKAP DI SINI
+        if (!response.ok) {
+            throw new Error(result.message || 'Gagal mengambil data pasien!');
         }
 
+        // 3. Kalau aman, variabel result ini isinya udah langsung data array pasien
+        const dataPasien = result; 
+        const tbody = document.getElementById('tabel-pasien');
+        tbody.innerHTML = '';
+
+        if (dataPasien.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="6" class="p-8 text-center text-slate-400"><i class="fa-solid fa-folder-open mb-2 block text-xl text-slate-300"></i>Belum ada pasien terdaftar.</td></tr>`;
+            return;
+        }
+
+        dataPasien.forEach(pasien => {
+            const nama = pasien.namaPasien || '-';
+            const tgl = pasien.tanggalLahir || '-';
+            const jk = pasien.jenisKelamin || '-';
+            const telp = pasien.noTelp || '-';
+
+            const badgeJk = (jk === 'L') 
+                ? `<span class="bg-blue-50 text-blue-600 px-2.5 py-1 rounded-full text-xs font-semibold border border-blue-100"><i class="fa-solid fa-mars mr-1"></i>Laki-laki</span>`
+                : `<span class="bg-pink-50 text-pink-600 px-2.5 py-1 rounded-full text-xs font-semibold border border-pink-100"><i class="fa-solid fa-venus mr-1"></i>Perempuan</span>`;
+
+            const row = `
+                <tr class="hover:bg-slate-50/80 transition duration-150">
+                    <td class="p-4 text-center font-bold text-slate-400 bg-slate-50/30">${pasien.id}</td>
+                    <td class="p-4 font-mono text-slate-500 tracking-wider">${pasien.nik || '-'}</td>
+                    <td class="p-4 font-semibold text-slate-900">${nama}</td>
+                    <td class="p-4 text-slate-500">${tgl}</td>
+                    <td class="p-4">${badgeJk}</td>
+                    <td class="p-4 text-slate-600 font-medium"><i class="fa-brands fa-whatsapp text-emerald-500 mr-1.5 text-base align-middle"></i>${telp}</td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    } catch (error) {
+        // TAMPILIN ERROR ASLI DARI BACKEND SECARA ELEGAN
+        document.getElementById('tabel-pasien').innerHTML = `
+            <tr><td colspan="6" class="p-8 text-center text-red-500 font-bold"><i class="fa-solid fa-triangle-exclamation mr-2"></i>Error: ${error.message}</td></tr>
+        `;
+    }
+}
         document.getElementById('pasien-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const nik = document.getElementById('pasien-nik').value;
